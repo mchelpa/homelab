@@ -14,5 +14,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check if keys in .ssh directory are valid
+      - name: all files in .ssh directory must be valid ssh public keys
         run: find .ssh -type f -exec ssh-keygen -lf {} \;
+
+      - name: all files in .ssh directory must be named "authorized_keys"
+        run: |
+          [ $(find .ssh -type f ! -name authorized_keys | wc -l) -eq 0 ]
+
+      - name: each file in .ssh must be in a dedicated catalog
+        run: |
+          [ $(find .ssh -maxdepth 1 -type f | wc -l) -eq 0 ]
